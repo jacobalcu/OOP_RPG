@@ -3,6 +3,7 @@ class Player:
     def __init__(self, name, cur_room):
         self._curRoom = cur_room
         self._name = name
+        self._inventory = []
 
     @property
     def name(self):
@@ -22,3 +23,12 @@ class Player:
             self._curRoom = next_room
             return True
         return False
+
+    def pick_up(self, item):
+        self._inventory.append(item)
+
+    def drop(self, item):
+        self._inventory.remove(item)
+
+    def has_item(self, itemName):
+        return itemName in self._inventory
