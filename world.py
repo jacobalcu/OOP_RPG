@@ -11,6 +11,7 @@ class Room:
     def __init__(self, desc):
         self._desc = desc
         self._exits = {}
+        self.is_locked = False
 
     def set_exit(self, direction, neighbor):
         # Connect room to another neighbor in specific dir
