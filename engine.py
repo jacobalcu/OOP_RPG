@@ -1,5 +1,6 @@
 # Import Room and Player to build world
 from world import Room
+from items import Key
 from factories import RoomFactory, RandomRoomFactory
 from entities import Player
 
@@ -32,11 +33,13 @@ class Game:
 
     def _setup_game(self):
         # Architect: Create and Connect objects
-        entrance = self._generate_linear_dungeon(10)
+        # entrance = self._generate_linear_dungeon(10)
+        self.start_room = RoomFactory.create_basic_dungeon()
+        self.player = Player("Hero", self.start_room)
 
         # Create Player and place in "Start Room"
         # Dependency Injection: passing Room obj to Player
-        self.player = Player("Hero", entrance)
+        # self.player = Player("Hero", entrance)
 
     def _process_input(self):
         # Get user intent
@@ -50,9 +53,18 @@ class Game:
         if command == "quit":
             self.is_running = False
         else:
-            self.handle_move(command)
+            self._handle_move(command)
 
-    def handle_move(self, direction):
+    def _handle_take(self, item_name):
+        # try to get item object from room
+        item_object = self.player.current_room.remove_item(item_name)
+        if item_object:
+            self.player.pick_up(item_object)
+            print(f"You took the {item_object.name}")
+        else:
+            print(f"There is no {item_name} here")
+
+    def _handle_move(self, direction):
         result = self.player.move(direction)
 
         if result == "success":
@@ -60,10 +72,16 @@ class Game:
         elif result == "wall":
             print("You run into a wall. No exit that way.")
         elif result == "locked":
+            targetRoom = self.player.current_room.get_exit(direction)
+            can_open = False
             # Logic 'bridge' between Player and Room
-            if self.player.has_item("key"):
+            for item in self.player.get_inventory():
+                if isinstance(item, Key) and item.lock_id == targetRoom.lock_id:
+                    can_open = True
+                    break
+            if can_open:
                 # Reach into next room and unlock it
-                targetRoom = self.player.current_room.get_exit(direction)
+                print(f"You unlock the door using the {item.name}")
                 targetRoom.is_locked = False
                 # Repeat move
                 self.player.move(direction)

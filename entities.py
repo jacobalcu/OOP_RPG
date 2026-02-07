@@ -3,7 +3,7 @@ class Player:
     def __init__(self, name, cur_room):
         self._curRoom = cur_room
         self._name = name
-        self._inventory = ["key"]
+        self._inventory = []
 
     @property
     def name(self):
@@ -35,5 +35,8 @@ class Player:
     def drop(self, item):
         self._inventory.remove(item)
 
+    def get_inventory(self):
+        return self._inventory
+
     def has_item(self, itemName):
-        return itemName.lower() in [i.lower() for i in self._inventory]
+        return itemName.lower() in [i.name.lower() for i in self._inventory]
