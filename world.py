@@ -37,6 +37,9 @@ class Room:
         # Return room in certain dir, or None if not exist
         return self._exits.get(direction.lower())
 
+    def get_all_exits(self):
+        return self._exits
+
     def get_description(self):
         # Return room's description
         display_text = f"You are in {self._desc}"

@@ -3,7 +3,7 @@ class Player:
     def __init__(self, name, cur_room):
         self._curRoom = cur_room
         self._name = name
-        self._inventory = []
+        self._inventory = []  # List of Item objects
 
     @property
     def name(self):
@@ -36,7 +36,20 @@ class Player:
         self._inventory.remove(item)
 
     def get_inventory(self):
-        return self._inventory
+        # Returns string representation of inventory
+        if not self._inventory:
+            return "Your inventory is empty."
 
-    def has_item(self, itemName):
-        return itemName.lower() in [i.name.lower() for i in self._inventory]
+        # Use .name attribute of Item objects for display
+        inventory_list = [item.name for item in self._inventory]
+        return "You are carrying: " + ", ".join(inventory_list)
+
+    # def has_item(self, itemName):
+
+    #     return itemName.lower() in [i.name.lower() for i in self._inventory]
+
+    def get_item_from_inventory(self, item_name):
+        for item in self._inventory:
+            if item.name.lower() == item_name.lower():
+                return item
+        return None
